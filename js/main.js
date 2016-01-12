@@ -1,73 +1,71 @@
+// "use strict"
 
-// function Drap_and_Drop(e) {
+var block = $(".block"); // найти всі блоки 
+
+
+function down_cursor(elm) {
   
-//   block = this;
-//   block.style.position = 'absolute';
-//   moveAt(e);
+  var ball = elm.toElement;
+  console.log(ball)
+  ball.style.position = 'absolute';
+  moveAt(ball);
   
-//   document.body.appendChild(block);
+  document.body.appendChild(ball);
 
-//   block.style.zIndex = 1000; // показывать мяч над другими элементами
+  ball.style.zIndex = 1000; // показывать мяч над другими элементами
 
-//   function moveAt(e) {
-//     block.style.left = e.pageX - block.offsetWidth / 2 + 'px';
-//     block.style.top = e.pageY - block.offsetHeight / 2 + 'px';
-//   }
+  function moveAt(e) {
+    ball.style.left = e.pageX - ball.offsetWidth / 2 + 'px';
+    ball.style.top = e.pageY - ball.offsetHeight / 2 + 'px';
+  }
 
-//   document.onmousemove = function(e) {
-//     moveAt(e);
-//   }
+  document.onmousemove = function(e) {
+    moveAt(e);
+  }
 
-//   block.onmouseup = function() {
-//     document.onmousemove = null;
-//     block.onmouseup = null;
-//   }
-// }
+  ball.onmouseup = function() {
+    document.onmousemove = null;
+    ball.onmouseup = null;
+  }
+} // -----------------------------------------------------------------------
+
 (function (){
 
-  var app = {
-    "init" : function (){
-      app.div_block = $('.block');
-      app.bootstrap_module();
+$.each(block, function (val, ind){
+  ind.onmouseover = function(obj){
+    $(obj.toElement).tooltip('show');
+  }
+  ind.onmousedown = down_cursor;
+}); //  вивисти всі тултипи у випадку якщо буде наведена мишка
 
-    },
-    "bootstrap_module" : function (){
-      var elm = app.div_block;
-      app.event_check(); // event moduel enable
-      app.timeouts();
-    },
-    "config" : { "width_docuemnt" : 0},
-    "event_check" : function() {
-        Array.prototype.map.call(app.div_block, function(elm){
-          elm.onmouseover = app.mouse_move_on_block;
-        });
-    }
-    ,"mouse_move_on_block" : function(obj ){
-      if ( $(document).width() <= 768 )
-        $.each(app.div_block, function (ind, val){
-          if (ind == app.div_block.length-1)
-            $(val).attr('data-placement', 'top');
-          else
-            $(val).attr('data-placement', 'bottom');
-        })
-
-      if ( $(document).width() >= 768 )
-        $.each(app.div_block, function (ind, val){
-          $(val).attr('data-placement', 'left');
-        })
-      $(obj.srcElement).tooltip('show');
-    },
-    "timeouts" : function(){
-      setTimeout(app.chenge_width_document, 1000);
-    },
-    "chenge_width_document" : function (){
-        if (app.config['width_docuemnt'] != $(document).width()){
-            app.config['width_docuemnt'] = $(document).width()
-            app.event_check();
-          }
-    }
-    
-  };
-  app.init();
+var width  = 0;
+setInterval(function(){
+  if ( width != $(document).width()){
+    change_position_tooltip();
+    width = $(document).width(); 
+  }
+}, 1000); // перевірити чи не змінився розмір вікна 
   
+
+function change_position_tooltip() {
+  if (width <= 768){ 
+    $.each(block, function(index,value){
+      if (index == block.length-1)
+        $(value).attr('data-placement', 'top')
+      else
+        $(value).attr('data-placement', 'bottom')
+        
+      
+    });
+  }
+  if (width > 768){ 
+    $.each(block, function(index,value){
+      $(value).attr('data-placement', 'left')
+        
+      
+    });
+  }
+
+}; // змінити розміщення тултипу
+
 })();
