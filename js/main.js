@@ -2,11 +2,20 @@
 
 var block = $(".block"); // найти всі блоки 
 
-
+// var position_block = {"one":{x:0,y:0},
+//                       "two":{x:0,y:0},
+//                       "three":{x:0,y:0},
+//                       "four":{x:0,y:0},
+//                       "five":{x:0,y:0},
+//                       "six":{x:0,y:0}};
+var position_block = $.ajax({
+  "type" : "POST",
+  "url"  : "data.json",
+});
 function down_cursor(elm) {
   
   var ball = elm.toElement;
-  console.log(ball)
+  // console.log(ball)
   ball.style.position = 'absolute';
   moveAt(ball);
   
@@ -24,11 +33,49 @@ function down_cursor(elm) {
   }
 
   ball.onmouseup = function() {
+    save_elm_server($(ball).text(), [ball.style.left.slice(0,-2), ball.style.top.slice(0,-2)]);
     document.onmousemove = null;
     ball.onmouseup = null;
   }
 } // -----------------------------------------------------------------------
 
+
+function save_elm_server (elm, pos){
+  var diget = "";
+  switch (elm){
+    case '1':
+      diget = "one";
+    break;
+      case '2':
+      diget = "two";
+    break;
+        case '3':
+      diget = "three";
+    break;
+        case '4':
+      diget = "four";
+    break;
+        case '5':
+      diget = "five";
+    break;
+        case '6':
+      diget = "six";
+    break;
+  }
+  position_block[diget].x = pos[0];
+  position_block[diget].y = pos[1];
+  // console.log(position_block)
+
+ $.ajax({
+   type: "POST",
+   url: "data.json",
+   data: position_block,
+   success: function(msg){
+     alert( "Data Saved: ");
+   }
+ });
+
+}
 (function (){
 
 $.each(block, function (val, ind){
