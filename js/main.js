@@ -2,16 +2,27 @@
 
 var block = $(".block"); // найти всі блоки 
 
-// var position_block = {"one":{x:0,y:0},
-//                       "two":{x:0,y:0},
-//                       "three":{x:0,y:0},
-//                       "four":{x:0,y:0},
-//                       "five":{x:0,y:0},
-//                       "six":{x:0,y:0}};
-var position_block = $.ajax({
-  "type" : "POST",
-  "url"  : "data.json",
+var position_block = {"one":{x:0,y:0},
+                      "two":{x:0,y:0},
+                      "three":{x:0,y:0},
+                      "four":{x:0,y:0},
+                      "five":{x:0,y:0},
+                      "six":{x:0,y:0}};
+
+
+// var position_block = [];
+
+$.getJSON('./data.json', function(data){
+  $.each(data, function(key, val){
+
+   // console.log( $("div [name = "+key+"]") );
+    $($("div [name = "+key+"]")[0]).attr('style', "top:"+val.x+"px;left:"+val.y+"px;")
+  });
+  // position_block = team;
 });
+// console.log(position_block)
+
+
 function down_cursor(elm) {
   
   var ball = elm.toElement;
@@ -62,20 +73,26 @@ function save_elm_server (elm, pos){
       diget = "six";
     break;
   }
+
+// console.log(position_block)
   position_block[diget].x = pos[0];
   position_block[diget].y = pos[1];
-  // console.log(position_block)
 
  $.ajax({
-   type: "POST",
-   url: "data.json",
-   data: position_block,
-   success: function(msg){
+  url: "./function.php",
+  type: 'POST',
+  data: {'data':JSON.stringify(position_block)},
+  success: function(msg){
      alert( "Data Saved: ");
    }
  });
 
 }
+
+
+
+
+
 (function (){
 
 $.each(block, function (val, ind){
